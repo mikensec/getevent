@@ -1,14 +1,19 @@
 #!/usr/bin/python3
-
 from winevt import EventLog
 
 def get_event(event_id):
+
     query = EventLog.Query("System","Event/System[EventID=%s]"% event_id)
+    event_list = []
+
     for event in query:
-        event_name = event.System.Provider['Name']
-        event_time = event.System.TimeCreated['SystemTime']
-        print("%s %s" % (event_name, event_time))
-    
+        event_list.extend([event.System.TimeCreated['SystemTime']])
+    if not event_list:
+        print("Not Found!")
+    else:
+        print(event_list[-1])
+
+                      
 from tkinter import *
 
 master = Tk()
@@ -23,7 +28,8 @@ def retrieve_input():
         else:
             input_value = int(text_box.get("1.0","end-1c"))  
             return get_event(input_value)
-  
+            
+        
 label = Label(master, text= "Enter Event ID:")
 label.grid(row=0, sticky=W, padx=5, pady=5)
 
